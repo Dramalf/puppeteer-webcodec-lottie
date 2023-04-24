@@ -2,7 +2,8 @@ const puppeteer = require('puppeteer-core')
 const express = require('express');
 const spawn = require('await-spawn')
 const fs = require('fs')
-const { request } = require('urllib');
+const path=require('path')
+const axios=require('axios')
 
 
 const app = express();
@@ -16,11 +17,15 @@ const chromePath = isDev
 app.use('/web', express.static(__dirname + '/public'));
 
 app.get('/', (req, res) => {
-  res.send('NodeJS Drama Lottie to Video use <a href="http://localhost:8000/web">puppeteer WebCodec Lottie-Web</a><br/>go to <a href="http://localhost:8000/dramaLottie" target="_blank">here</a>');
+  res.send(`
+  NodeJS Drama Lottie to Video use <a href="http://localhost:8000/web">puppeteer WebCodec Lottie-Web</a>
+  <br/>
+  check test demo <a href="http://localhost:8000/dramaLottie" target="_blank">click here</a>`
+  );
 });
 app.get('/dramaLottie', async (req, res) => {
-  const testLottieUrl = 'https://slobs-cdn.oss-cn-hangzhou.aliyuncs.com//star-cloud/schema/1682235940673.json';
-  const lottieObj = await request(testLottieUrl).then(res => res.data).then(res => JSON.parse(res))
+  const testLottieUrl = 'https://assets2.lottiefiles.com/packages/lf20_w51pcehl.json';
+  const lottieObj = await axios.get(testLottieUrl).then(res => res.data)
   const htmlUrl = 'http://localhost:8000/web'
   const args = isDev ? [
     '--disable-web-security', // 本地 避免cors报错
@@ -54,7 +59,7 @@ app.get('/dramaLottie', async (req, res) => {
   )
   const fileName = './test'
   const h264FilePath = `${fileName}.h264`
-  const mp4FilePath = `${fileName}.mp4`
+  const mp4FilePath = `./public/${fileName}.mp4`
 
   await fs.promises.writeFile(h264FilePath, h264BinStr, 'binary')
 
@@ -67,7 +72,7 @@ app.get('/dramaLottie', async (req, res) => {
   console.log(`任务总时长 ${(Date.now() - loadStartTime) / 1000}`)
   console.log('finish')
   fs.unlinkSync(h264FilePath);
-  res.send('finish')
+  res.sendFile(path.join(__dirname, 'public', `${fileName}.mp4`));
 });
 app.listen(8000, () => {
   console.log('App listening on ', 'http://localhost:8000');
