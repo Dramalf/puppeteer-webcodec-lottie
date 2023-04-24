@@ -8,10 +8,10 @@
   },
   "dependencies": {
     "await-spawn": "^4.0.2",
+    "axios": "^1.3.6",
     "express": "^4.18.2",
     "lottie-web": "^5.11.0",
-    "puppeteer-core": "11.0.0",
-    "urllib": "^3.13.1"
+    "puppeteer-core": "11.0.0"
   },
   "author": "",
   "license": "ISC"

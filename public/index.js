@@ -1,20 +1,5 @@
 window.lottie2video = async (template) => {
     const { w, h, fr: fps } = template;
-    // const canvas=document.getElementById('dc');
-    const canvas = document.createElement('canvas')//new OffscreenCanvas(w, h);
-
-    // document.body.appendChild(canvas)
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    var x = canvas.width / 2;
-    var y = canvas.height / 2;
-    var r = 50;
-
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, 2 * Math.PI);
-    ctx.fillStyle = "red";
-    ctx.fill();
     const anim = lottie.loadAnimation({
         container: document.getElementById('box'),
         renderer: 'canvas',
