@@ -2,6 +2,10 @@
 
 Use puppeteer in nodejs using webcodec to convert lottie file to mp4 video
 
+lottie --> load in puppeteer lottie-web --> encode each frame by VideoEncoder and VideoFrame --> frames-buffer-blob-file --> send back to nodejs --> use ffmpeg generate video
+
+## demo
+
 * `npm i `
 * `node server.js`  the demo runs on http://localhost:8000/
 * paste your own lottiefile-json-url (default is https://assets7.lottiefiles.com/private_files/lf30_obidsi0t.json, you can find some on https://lottiefiles.com )
