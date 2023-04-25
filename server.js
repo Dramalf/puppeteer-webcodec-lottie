@@ -2,15 +2,15 @@ const puppeteer = require('puppeteer-core')
 const express = require('express');
 const spawn = require('await-spawn')
 const fs = require('fs')
-const path=require('path')
-const axios=require('axios')
+const path = require('path')
+const axios = require('axios')
 
 
 const app = express();
 const isDev = process.platform === 'darwin';
 const chromePath = isDev
   ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-  : `${process.cwd()}/../chromium/chrome`
+  : `${process.cwd()}/path/to/chromium/chrome`
 
 
 
@@ -18,14 +18,37 @@ app.use('/web', express.static(__dirname + '/public'));
 
 app.get('/', (req, res) => {
   res.send(`
-  NodeJS Drama Lottie to Video use <a href="http://localhost:8000/web">puppeteer WebCodec Lottie-Web</a>
-  <br/>
-  check test demo <a href="http://localhost:8000/dramaLottie" target="_blank">click here</a>`
-  );
+  <html>
+
+  <head>
+      <title>Lottie-2-Video</title>
+  </head>
+  
+  <body>
+      NodeJS convert Lottie to Video using <b>puppeteer_webcodec_lottie-web</b>
+      <br />
+      check demo
+      <input id="url-input"
+       value="https://assets7.lottiefiles.com/private_files/lf30_obidsi0t.json"
+       style="width:500px;"
+       ></input>
+      <button onclick="convert()">convert</button>
+  </body>
+  <script>
+  function convert(){
+    const url=document.getElementById('url-input').value;
+    window.location.href = '/dramaLottie?lottie='+url;
+  }
+  </script>
+  
+  </html>
+  `)
 });
 app.get('/dramaLottie', async (req, res) => {
-  const testLottieUrl = 'https://assets2.lottiefiles.com/packages/lf20_w51pcehl.json';
-  const lottieObj = await axios.get(testLottieUrl).then(res => res.data)
+  const testLottieUrl = req.query.lottie;
+  const lottieObj = await axios.get(testLottieUrl).then(res => res.data).catch(err=>{
+    res.send("error, fail to fetch lottie")
+  })
   const htmlUrl = 'http://localhost:8000/web'
   const args = isDev ? [
     '--disable-web-security', // 本地 避免cors报错
@@ -51,7 +74,6 @@ app.get('/dramaLottie', async (req, res) => {
   const loadStartTime = Date.now()
   await page.goto(htmlUrl);
   await page.waitForFunction('typeof window.lottie2video === "function"')
-  console.log(`页面加载时间 ${(Date.now() - loadStartTime) / 1000}`)
   const h264BinStr = await page.evaluate(
     async (path) =>
       await window.lottie2video(path),
@@ -70,7 +92,6 @@ app.get('/dramaLottie', async (req, res) => {
     )
   )
   console.log(`任务总时长 ${(Date.now() - loadStartTime) / 1000}`)
-  console.log('finish')
   fs.unlinkSync(h264FilePath);
   res.sendFile(path.join(__dirname, 'public', `${fileName}.mp4`));
 });
