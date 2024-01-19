@@ -4,13 +4,8 @@ const spawn = require('await-spawn')
 const fs = require('fs')
 const path = require('path')
 const axios = require('axios')
-
-
 const app = express();
-const isDev = process.platform === 'darwin';
-const chromePath = isDev
-  ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-  : `${process.cwd()}/path/to/chromium/chrome`
+const chromePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 
 
 
